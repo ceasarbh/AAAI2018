@@ -1,0 +1,47 @@
+
+\section{Introduction}
+
+Associative memory is a new memory storage method. 
+The other name content-addressable memory is more clearly. 
+It is a special type of computer memory used in certain very-high-speed searching application\cite{krikelis1994associative}.  
+The main difference is that a content-addressable memory doesn't need the explicit address which is necessary for traditional computer memory system. 
+The associative memory has two types. One is auto-associative memory, and another is hetero-associative. 
+In auto-associative memory, the dimension of input is the same with the output. 
+In hetero-associative memory, the dimension of input is not the same as the output.
+
+This paper concerns mainly on Hopfield network, one of the auto-associative memory, proposed by John Hopfield in 1982 \cite{hopfield1982neural}. 
+He shows that this  network has a complex collective computational  abilities by an ensemble of simple processing units. 
+Given an input, the Hopfield model computes its output recursively in time until the system donot change the vector. 
+But the  method to design the parameter weight of Hopfield model of which the Hopfield network can remember some memory messages is a big problem. 
+In his 1982's original paper, Hopfield designs the prescription of weight which idea is motivated by Hebbian learning rule to achieve the goal, which the Hopfield network can remember some messages, and can recover from the noise messages. 
+In 1987, Mceliece proved that the capacity of Hopfield network in his original paper is about 0.14$N$($N$ is the size of the Hopfield network)\cite{mceliece1987capacity}.
+
+Hopfield network is an associative memory network. 
+Associative memory is a different memory from traditional memory. 
+Traditional memory saves messages at a unique address. When retrieving these messages, we require the complete unique address.
+But associative memory can retrieve target message upon only partial information of target message or small error from target message. 
+For example, the initial input message is "You are the $\_\_\_$ in my eye." or "You are the appple in my eye.", the target message is "You are the apple in my eye."
+This is the capability of an associative network to recall the whole message by the part of message.
+So in theorem, Hopfield network can finish this work. 
+But there exist some problems, like capacity and recuperative capability.
+
+In my review the Hopfield network, there are two main methods to confirm the weight of the Hopfield network. 
+One is designing method, like the Hopfield original paper. 
+For instance, In 1987, I. Kanter claim that their method can achieve a better result compared to Hopfield method \cite{kanter1987associative}. 
+Then in 1997. Storkey proposed a new designed method to promote the capacity of Hopfield network\cite{storkey1999basins}.  
+On the other hand, in 2012, C.Hillaer introduces the minimum probability flow(MPF) to design the weight of Hopfield network by training \cite{hillar2012efficient}. 
+However, existing methods to train Hopfield networks  suffer from limited pattern capacity. 
+Our method is similar to the MPF, but we can get a better result on all the metric.
+
+Our main theoretical result is that if the Hopfield network has an optimal solution, we can find this optimal solution by machine learning method. 
+Besides, if we train on high noise level $\beta$, we can get a better result on noise level under $\beta$. 
+We also perform two experiments to verify our theoretical results.
+
+%Our idea is inspired by the prosperous of machine learning method, especially deep neural networks. Deep neural networks achieve many amazing works on image recognition \cite{krizhevsky2012imagenet}, \cite{he2016deep}, large vocabulary speech recognition
+
+In the remainder of the paper, we discuss the previous work on weight setting of the Hopfield network. 
+Then, we give the notation and terminology. 
+Next, we perform theorem results and prove them. Then we present our algorithm to solve problems. 
+In the experiment part, we first introduce our simulation dataset. 
+Next we give the comparison of method. Then we give our two experiment result. 
+Finally, we summarise our work and give the direction of future work. 

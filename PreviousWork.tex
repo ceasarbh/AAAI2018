@@ -1,0 +1,67 @@
+
+\section{Discussion of Previous Work}
+
+Hopfield network is a $N$ nodes of a network. 
+This is a system with $N$ dimension state. The parameter of the system is $\textbf{W}$. 
+If you input a probe of $N$ dimension vector, the system will output the target message of the probe after the evolution. 
+The critical problem is how to get the parameter weight $\textbf{W}$ of which the system can remember some messages and do recovery work.
+
+There are two research directions to get the parameter weight $\textbf{W}$ of the system. 
+On one hand, set weight by memory messages, particularly like Hopfield's work in 1982\cite{hopfield1982neural}, Pseudo-inverse learning rule by I. Kanter in 1987\cite{kanter1987associative}, and Storkey learning rule by A. Storkey in 1999\cite{storkey1999basins}. 
+On the other hand, there is a machine learning method introduced by C. Hillar in 2012\cite{hillar2012efficient}. 
+Our method is also machine learning method, but different from MPF in exact learning method, and we can get better results.
+
+\subsection{Hopfield Method}
+A learning rule can have two useful properties: local and incremental. 
+If it uses only the information from both nodes whose connectivity weight is updated for each update, we call it local. 
+If it does not require any information about the other patterns previously learnt by the network, we call it incremental.
+
+$X_i^m$ is the state of node $i$ in message $m$. $W_{ij}^m$: the weight after $m^{th}$ memory message saved.
+
+Hopfield designed the weight of this system by Hebbian learning rule. 
+He presented the associative memory function by experiment. 
+And he gave a simple explain which the capacity of Hopfield network is $0.14N$. 
+Hopfield network is local and incremental.
+The main learning method is according to the following equation:
+    \begin{eqnarray*}
+     W_{ij}^0 = 0 \quad and \quad W_{ij}^m = W_{ij}^{m - 1} + \frac{1}{N} X_i^mX_j^m
+    \end{eqnarray*}
+
+Then in 1987, I.Kanter proposed a learning rule named pseudo-inverse which the capacity is $N$. But this method is neither local nor incremental.
+    \begin{eqnarray*}
+     W_{ij} = \frac{1}{N} \sum_{v=1}^M \sum_{\mu = 1}^M X_i^v(Q^{-1})^{v\mu}X_j^{\mu}
+    \end{eqnarray*}
+
+Then in order to get a larger capacity, A.Storkey proposed a new learning rule in 1997 which is not only local but incremental.
+    \begin{eqnarray*}
+     W_{ij}^0 &=& 0; \\
+     W_{ij}^m &=& W_{ij}^{m - 1} + X_i^mX_j^m - X_i^mh_{ji}^m - h_{ij}^mX_j^m \\
+     h_{ij}^m &=& \sum_{k=1,k\neq i,j}^N W_{ik}^{m-1}X_k^m
+    \end{eqnarray*}
+
+\subsection{MPF}
+C.Hillar introduced minimum probability flow(MPF) which is a parameter optimization method in energy-based probabilistic models. 
+He insisted that his algorithm achieves $N$ storage which is at least one pattern per neuron. 
+The weight from his method can also get a better recovery ability on noisy or corrupted versions of a stable point of pattern.
+
+Consider a collection of $M$ N-bit messages $\cal{D}$ to be stored as strict local minima in a Hopfield network. $\cal{N}(X)$: The neighborhood of $X$ consists of those vectors which are Hamming distance 1 away from $X$. 
+The minimum probability flow(MPF) objective function given the collection $\cal{D}$ is
+    \begin{eqnarray*}
+      K_{\cal{D}}(W, \theta) := \sum_{X \in \cal{D}} \sum_{X' \in \cal{N}(X)} \exp \left(\frac{E_x - E_{x'}}{2}\right)
+    \end{eqnarray*}
+Notice that this function is infinitely differentiable and convex in the parameters.
+Minimizing this objective function given a storable set of patterns will determine a Hopfield network storing those patterns.
+
+\subsection{Our method}
+Since there is a solution of weight $\textbf{W}$ which can save memory messages. 
+So in theory, there is an optimization method we can find this solution or an approximate solution. 
+So according to the structure of Hopfield network, we design this MLP network to simulate the Hopfield network. 
+After training on the training set, the approximate solution we can obtain. 
+The main contribution of our work is:
+\begin{itemize}
+  \item Our machine learning method can get the approximate solution of the Hopfield network.
+  \item Prove that if we train the Hopfield network on noise level $\beta$, the message error is less than $\epsilon, \forall \epsilon$. 
+      then $\forall \gamma < \beta$, the $\gamma$ is noise level on the testing set, the message error is also less than $\epsilon$.
+      And this conclusion can be verified by the experiment.
+  \item The simulation experiments also exhibit that the weight $W$ of our MLP method can get a better result in recovery problem.
+\end{itemize}

@@ -1,0 +1,133 @@
+\section{Definitions and Terminology}
+\subsection{Definitions}
+
+
+In Hopfield original paper, the Hopfield network $\cal{H} = (\textbf{W}, \theta)$ with $N$ nodes. 
+So the state is $N$-dimension vector, the weight matrix $\textbf{W}$ is symmetric with zero diagonal, and the $\theta = (\theta_1,...,\theta_N)^T$ is a threshold vector. 
+The state $X$ choose from binary vector $\{0, 1\}^N$, represented by $X = (x_1, ..., x_N)^T$. 
+Given any probe $X$ to the Hopfield network, there will be a dynamical update of $X$ in every position $x_i$ according to
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  x_i &=& H(\textbf{W}_iX - \theta_i)
+\end{eqnarray*}
+Here, $\textbf{W}_i$ is the $i$-th row of $\textbf{W}$ and $H$ is the Heaviside function of which
+
+\begin{eqnarray*}
+  H(r) = 
+  \begin{cases}
+    1, & \mbox{if $r > 0$} \\
+    0, & \mbox{otherwise}.
+  \end{cases}
+\end{eqnarray*}
+In summary, the every position of unit compute a weighted sum of the input and produces binary result depending on whether the weighted sum is below or above a certain threshold value.
+
+The energy of Hopfield network with a binary pattern $X$ is defined by
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  E_X(\textbf{W}, \theta) &:=& -\frac{1}{2}X^T\textbf{W}X + \theta^TX \\
+  &=& -\frac{1}{2}\sum_{i=1}^{N} \sum_{j=1}^{N} W_{ij}x_ix_j + \sum_{i=1}^{N} \theta_ix_i
+\end{eqnarray*}
+This is identical to the energy function for an Ising model in physics. 
+Besides, Hopfield proves that under asynchronous dynamical updates, the energy cannot increase. 
+Thus, after a finite updates, the probe will converge to a stable point $X^*$, of which $x_i^* = H(\textbf{W}_iX^* - \theta_i)$ for each $i$.
+
+Given $\mathcal{M} = \{X^1, ..., X^M\}$, where each $X^i$ is an i.i.d. \emph{Ber}($\alpha$) sequence. For each $X^m$, let$Y^{mk} = \bar{X}^m$, every position $y_i^{mk} = \bar{x}_i^m$ with a probabilistic $\beta$. Otherwise, $y_i^{mk} = x_i^m$. The objective function is:
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  F(\textbf{W}, \theta) &:=& \sum_{m=1}^{M}  \textbf{E}_{Y^{mk}} ||g_1(Y^{mk}, \textbf{W}, \theta) - X^m||^2
+\end{eqnarray*}
+
+If $X$ is binary vector, $g_1$ is sigmoid function with parameter $\sigma$. 
+When $\sigma \rightarrow \infty$, we know sigmoid function is the Heaviside function. 
+This is why we choose this continue function to approximate the Heaviside function. Cause sigmoid function is a continue function, we can do partial derivative on weight $\textbf{W}$.
+
+\subsection{Theorem Results}
+Theorem I: If we train the Hopfield network on noise level $\beta$, the error rate is $\epsilon_1$. 
+Then we conclude that if the testing set's noise level is low than $\beta$, the error rate is low than $\epsilon_1$.
+
+Cause this is an evolution system, every state vector will arrive a state. 
+After our training, we get a weight $\textbf{W}$ to make messages $\mathcal{M}$ stable point with an attraction domain. 
+Then for any probe input $X$, there are three cases:
+\begin{itemize}
+  \item $X$ is in true attraction domain, then the output is the true memory.
+  \item $X$ is in false attraction domain, then the output is the false memory.
+  \item $X$ is not in attraction domain, then the output is false.
+\end{itemize}
+
+For every $X^m$, there is a radius $D^m$ of attraction domain. 
+If we choose $Y^{mk}$ from the $Ber(\beta)$. 
+The probabilistic is $Er = \frac{1}{M} \sum_{m=1}^{M}Er(D^m)$, where $Er(D^m) = 1 - \sum_{d=1}^{D^m} C_N^d \beta^d (1 - \beta)^{N-d}$. 
+According the distribution of $Ber(\beta)$, the following conclusion is correct.
+Along with the increase of $\beta$, the error rate is increased.
+
+On the other hand, we can get the exact error function with the parameter $\beta$.
+Let fix $x_i$, the random is come from $Y$ and $x_k, k \neq i$. Mark $h_i = W_{ii}Y_i + \sum_{k \neq i}^N W_{ik}Y_k$. When $X_i = 1$, $$E(h_i|X_i = 1) = W_{ii}(1 - \beta) + \sum_{k \neq i}W_{ik} [\beta \bar{X_k} + (1 - \beta) X_k]$$
+Moreover, $$E(h_i|X_i = 1) = W_{ii}(1 - \beta) + \sum_{k \neq i}W_{ik} [\beta (1 - \alpha) + (1 - \beta) \alpha]$$
+Let $R_k = W_{ik}[\beta \bar{X_k} + (1 - \beta)X_k]$, we know $R_k$ is a independent random variables, each with finite expected value $\mu_k$ and variance $\sigma_k^2$.
+\begin{eqnarray*}
+  \mu_k &=& W_{ik}[\beta (1 - \alpha) + (1 - \beta) \alpha] \\
+  \sigma_k^2 &=& W_{ik}^2 [\beta^2 + (1 - \beta)^2](1 - \alpha)\alpha
+\end{eqnarray*}
+According to the Lyapunov Central Limit Theorem, when $N \rightarrow \infty$, we know $\sum_{k \neq i}^N R_{k}$ is a Gaussian distribution with $$\mu = \sum_{k \neq i}^N W_{ik}[\beta (1 - \alpha) + (1 - \beta) \alpha]$$
+and $$\sigma^2 = \sum_{k \neq i}^N W_{ik}^2 [\beta^2 + (1 - \beta)^2](1 - \alpha)\alpha$$
+
+Then we get the results: When $X_i = 1$, and $N$ is a big number, $h_i$ is a Gaussian distribution.
+    \begin{eqnarray*}
+      \mu_{h_i^1} = W_{ii}(1 - \beta) + \sum_{k \neq i}^N W_{ik}[\beta (1 - \alpha) + (1 - \beta) \alpha] \\
+      \sigma_{h_i^1}^2 = \sum_{k \neq i}^N W_{ik}^2 [\beta^2 + (1 - \beta)^2](1 - \alpha)\alpha
+    \end{eqnarray*}
+When $X_i = 0$, and $N$ is a big number, $h_i$ is a Gaussian distribution.
+    \begin{eqnarray*}
+      \mu_{h_i^0} = W_{ii} \beta + \sum_{k \neq i}^N W_{ik}[\beta (1 - \alpha) + (1 - \beta) \alpha] \\
+      \sigma_{h_i^0}^2 = \sum_{k \neq i}^N W_{ik}^2 [\beta^2 + (1 - \beta)^2](1 - \alpha)\alpha
+    \end{eqnarray*}
+Notice that the $\mu_{h_i^1}$ is different from $\mu_{h_i^0}$, the $\sigma_{h_i^1}$ is the same with $\sigma_{h_i^1}$, we abbreviate it as $\sigma_{h_i}$. 
+So bit error rate(\textbf{BER}) and message error are as follows:
+    \begin{eqnarray*}
+      \textbf{BER}_i &=& \phi(\mu_{h_i^1}, \sigma_{h_i};\frac{1}{2}) + [1 - \phi(\mu_{h_i^0}, \sigma_{h_i}; \frac{1}{2})] \\
+      \textbf{BER}_{max} &=& \max_{i} \textbf{BER}_i \\
+      \textbf{MER} &=& 1 - (1 - \textbf{BER}_{max})^N
+    \end{eqnarray*}
+Since $\textbf{BER}_{max} \in [0, 1]$, $\textbf{MER}$ is increased with $\textbf{BER}$. 
+Cause $\textbf{W}$ is not all positive, so we cannot get the relation of $\textbf{BER}_{max}$ and $\beta$, or $\textbf{MER}_{max}$ and $\beta$.
+
+\subsection{Algorithm}
+
+ According to the purpose of remembering messages, we generate the training set from the memory messages. 
+ Then we design the objective function to achieve our goal. 
+ Exactly, we metric the Euclid distance between the output of Hopfield system and the label.
+ 
+ This is a optimization problem. So we adopt stochastic gradient descent(\textbf{SGD}) algorithm to train $F(\textbf{W})$, then we get the optimal $\textbf{W}$, and mark it as $\textbf{W}^*$, note that $\textbf{W}^*$ depends on $\{ \mathcal{M}, \beta, N\}$.
+
+ The exact algorithm is as follows:
+
+\begin{algorithm}[tbp]
+\LinesNumbered
+\caption{MLP Training}\label{MLP Training}
+\KwIn{$E, \{X^i, Y^i\}_{i=1}^{A}$}
+\KwOut{$\textbf{W}$}
+Initialization:
+$\textbf{W}$\;
+\While{$e<E$}{
+    Sample a minibach $\{(X^i, Y^i)\}, i = 1, ..., B$\;
+    \For {$i = 1, ..., B$}{
+        Computer the gradient:
+        $\Delta \textbf{W} \leftarrow \nabla_{\textbf{W}}l(\textbf{W}, \{(X^i, Y^i)\})$\;
+        $\textbf{SW} \leftarrow \textbf{SW} + \Delta \textbf{W}$\;
+        }
+    $\textbf{W} \leftarrow \textbf{W} - \epsilon \cdot \textbf{SW}$\;
+    \For {$i = 1, ..., A$}{
+        Calculate the loss $l_i$:
+    }
+    Calculate the loss on Training set:
+    $L = \sum_{j=1}^{B} l_j$\;
+    \If {$e > 100$}{
+        $\Delta L \leftarrow |L(e)-L(100)|$\;
+        \If {$\Delta L < \delta$}{
+            stop
+        }
+    }
+    $e \leftarrow e + 1$
+}
+\Return  $\textbf{W}$\;
+\end{algorithm} 

@@ -1,4 +1,12 @@
 ## Core latex/pdflatex auxiliary files:
+
+## by baohan
+main.pdf
+main.synctex
+main.synctex(busy)
+*.out.bak
+*.tex.bak
+
 *.aux
 *.lof
 *.log
